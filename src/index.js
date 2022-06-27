@@ -7,35 +7,29 @@ const DEBOUNCE_DELAY = 300;
 const searchForm = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 
-
-
 searchForm.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(e) {
     e.preventDefault();
     let serchFormValue = e.target.value.trim();
 fetchCountries(serchFormValue)
-    .then(name => {countryList.innerHTML = responseInterface(name)})
-    .catch(Notify.failure("Oops, there is no country with that name"))
-
-}
-
-
-
-function responseInterface(name) {
-    const [flags, common, capital, population, languages ] = name;
+    .then(name => {countryList.innerHTML = renderResponse(name)})
+    .catch(error => {Notify.failure("Oops, there is no country with that name")     
+      })
+};
+function renderResponse(name) {  
     console.log(name)
-
     if (name.length > 1 && name.length < 11  ) {
-            return name.map(({ flags, common }) => `<li class="country-item"> <img src=${flags.svg} width="70"><h2 class="country-name">${common}</h2> </li>`);
+            return name.map(({ flags, name }) => `<li class="country-item"> <img src=${flags.svg} width="70"> <h2 class="country-name">${name.common}</h2> </li>`)
         };
     if (name.length<2) {
-          return name.map(({ flags, common }) =>`<div><div class="country-item"> <img src=${flags.svg} width="70"> <h2 class="country-name">${name.official}</h2> </div> <p class = "country-feature">Capital: ${name.capital}</p><p class = "country-feature">Population: ${name.population}</p><p class = "country-feature">Languages: ${name.languages}</p></div>`)
-    }
-    else 
-            console.log(name.length)
-            return " ";
+          return name.map(({ flags, name, population, capital, languages }) => `<div><div class="country-item"> <img src=${flags.svg} width="70"> <h2 class="country-name">${name.official}</h2> </div> <p class = "country-feature">Capital: ${capital}</p><p class = "country-feature">Population: ${population}</p><p class = "country-feature">Languages: ${getlanguages}</p></div>`)
+
+        }
+    else console.log(name.length)
         Notify.info("Too many matches found. Please enter a more specific name.");
-}
+        return " ";
+        
+};
 
 
